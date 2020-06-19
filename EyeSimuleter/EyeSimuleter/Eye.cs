@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using static System.Math;
 
@@ -48,12 +49,12 @@ namespace EyeSimuleter
 
                     //Нахождение пересечений луча зрения с полигонами:
                     foreach (ConvexPolygon polygon in decor)
-                        if (polygon.GetIntersection(lazerSource, currentPixel, out float rayCordinate) is DirectCoordinate intersection && rayCordinate > 1)
+                        if (polygon.GetIntersection(lazerSource, currentPixel, out float rayCordinate) is DirectCoordinate intersection && rayCordinate > 0)
                             intersections.Add(((intersection - lazerSource).Length, polygon.colorFill));
 
                     //Закраска пикселя в соответсвии с расположением видимых барьеров
                     foreach (Brush brush in intersections.OrderByDescending(p => p.distance).Select(p => p.colorFill))
-                        g.FillRectangle(brush, i * pixelSize - pixelSize / 2, j * pixelSize - pixelSize / 2, pixelSize, pixelSize);
+                        g.FillRectangle(brush, (int)i * pixelSize - pixelSize / 2, (int)j * pixelSize - pixelSize / 2, pixelSize, pixelSize);
                 }
         }
 

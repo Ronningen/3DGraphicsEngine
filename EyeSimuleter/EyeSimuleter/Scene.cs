@@ -36,7 +36,7 @@ namespace EyeSimuleter
             eye = new Eye();
 
             decor = new List<ConvexPolygon>();
-            GenetateTriangles(8, (500, -1500, -1000), (2000, 3000, 2000));
+            GenerateCube(100);
 
             evulater += eye.Move;
         }
@@ -111,11 +111,11 @@ namespace EyeSimuleter
         {
             Random r = new Random();
             for (uint i = 0; i < amount; i++)
-                decor.Add(new ConvexPolygon(new SolidBrush(Color.FromArgb(r.Next(256), r.Next(256), r.Next(256), r.Next(256))), new DirectCoordinate[]
+                decor.Add(new ConvexPolygon(new SolidBrush(Color.FromArgb(r.Next(160, 256), r.Next(256), r.Next(256), r.Next(256))), new DirectCoordinate[]
                 {
-                    boxVertex + (r.Next(100, (int)boxSize.X), r.Next((int)boxSize.Y), r.Next((int)boxSize.Z)),
-                    boxVertex + (r.Next(100, (int)boxSize.X), r.Next((int)boxSize.Y), r.Next((int)boxSize.Z)),
-                    boxVertex + (r.Next(100, (int)boxSize.X), r.Next((int)boxSize.Y), r.Next((int)boxSize.Z))
+                    boxVertex + (r.Next((int)boxSize.X), r.Next((int)boxSize.Y), r.Next((int)boxSize.Z)),
+                    boxVertex + (r.Next((int)boxSize.X), r.Next((int)boxSize.Y), r.Next((int)boxSize.Z)),
+                    boxVertex + (r.Next((int)boxSize.X), r.Next((int)boxSize.Y), r.Next((int)boxSize.Z))
                 }));
         }
 
