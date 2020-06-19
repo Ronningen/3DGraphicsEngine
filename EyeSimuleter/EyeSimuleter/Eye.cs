@@ -83,7 +83,7 @@ namespace EyeSimuleter
         public void Move()
         {
             if (moving.forward ^ moving.backward)
-                location += (moving.forward ? 1 : -1) * speed * new DirectCoordinate(hor, verticalMovingAllowed ? vert : 0);
+                location += (moving.backward ? 1 : -1) * speed * new DirectCoordinate(hor, verticalMovingAllowed ? vert : 0);
             if (moving.left ^ moving.right)
                 location += (moving.left ? 1 : -1) * speed * new DirectCoordinate((float)Cos(hor - PI / 2), (float)Sin(hor - PI / 2), 0);
             if (moving.up ^ moving.down)
