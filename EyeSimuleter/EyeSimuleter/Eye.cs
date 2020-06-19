@@ -34,7 +34,7 @@ namespace EyeSimuleter
         {
             //Выделение памяти и определение локальных констант:
             List<(float distance, Brush colorFill)> intersections = new List<(float, Brush)>();
-            DirectCoordinate lazerSource = location + observingDistance * new DirectCoordinate(hor, vert);
+            DirectCoordinate forwardFrameVector = observingDistance * new DirectCoordinate(hor, vert);
             DirectCoordinate leftFrameVector = new DirectCoordinate(hor + PI / 2, 0);
             DirectCoordinate upFrameVector = new DirectCoordinate(hor, vert + PI / 2);
             DirectCoordinate currentPixel;
@@ -43,14 +43,14 @@ namespace EyeSimuleter
                 for (uint j = 1; j < width / pixelSize; j++)
                 {
                     intersections.Clear();
-                    currentPixel = location
+                    currentPixel = location + forwardFrameVector
                         + (width / 2 - i * pixelSize) * leftFrameVector
                         + (height / 2 - j * pixelSize) * upFrameVector;
 
                     //Нахождение пересечений луча зрения с полигонами:
                     foreach (ConvexPolygon polygon in decor)
-                        if (polygon.GetIntersection(lazerSource, currentPixel, out float rayCordinate) is DirectCoordinate intersection && rayCordinate > 0)
-                            intersections.Add(((intersection - lazerSource).Length, polygon.colorFill));
+                        if (polygon.GetIntersection(location, currentPixel, out float rayCordinate) is DirectCoordinate intersection && rayCordinate > 0)
+                            intersections.Add(((intersection - location).Length, polygon.colorFill));
 
                     //Закраска пикселя в соответсвии с расположением видимых барьеров
                     foreach (Brush brush in intersections.OrderByDescending(p => p.distance).Select(p => p.colorFill))
