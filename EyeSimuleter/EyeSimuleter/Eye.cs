@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
 using static System.Math;
 
@@ -34,8 +33,8 @@ namespace EyeSimuleter
         {
             //Выделение памяти и определение локальных констант:
             List<(float distance, Brush colorFill)> intersections = new List<(float, Brush)>();
-            DirectCoordinate forwardFrameVector = observingDistance * new DirectCoordinate(hor, vert);
-            DirectCoordinate leftFrameVector = new DirectCoordinate(hor + PI / 2, 0);
+            DirectCoordinate forwardFrameVector = location + observingDistance * new DirectCoordinate(hor, vert);
+            DirectCoordinate rightFrameVector = new DirectCoordinate(hor - PI / 2, 0);
             DirectCoordinate upFrameVector = new DirectCoordinate(hor, vert + PI / 2);
             DirectCoordinate currentPixel;
 
@@ -43,8 +42,8 @@ namespace EyeSimuleter
                 for (uint j = 1; j < width / pixelSize; j++)
                 {
                     intersections.Clear();
-                    currentPixel = location + forwardFrameVector
-                        + (width / 2 - i * pixelSize) * leftFrameVector
+                    currentPixel = forwardFrameVector
+                        + (width / 2 - i * pixelSize) * rightFrameVector
                         + (height / 2 - j * pixelSize) * upFrameVector;
 
                     //Нахождение пересечений луча зрения с полигонами:
@@ -71,7 +70,7 @@ namespace EyeSimuleter
             {
                 hor += (double)(nextPoint?.X - rotatePoint?.X?? 0) / 100;
                 hor %= 2 * PI;
-                vert += (double)(nextPoint?.Y - rotatePoint?.Y ?? 0) / 100;
+                vert -= (double)(nextPoint?.Y - rotatePoint?.Y ?? 0) / 100;
                 vert = (vert >= PI / 2) ? (PI / 2 - 0.001) : ((vert <= -PI / 2) ? (-PI / 2 + 0.001) : vert);
             }
             rotatePoint = nextPoint;
@@ -83,11 +82,11 @@ namespace EyeSimuleter
         public void Move()
         {
             if (moving.forward ^ moving.backward)
-                location += (moving.backward ? 1 : -1) * speed * new DirectCoordinate(hor, verticalMovingAllowed ? vert : 0);
+                location += speed * new DirectCoordinate(hor, verticalMovingAllowed ? vert : 0) * (moving.forward ? 1 : -1);
             if (moving.left ^ moving.right)
-                location += (moving.left ? 1 : -1) * speed * new DirectCoordinate((float)Cos(hor - PI / 2), (float)Sin(hor - PI / 2), 0);
+                location += speed * new DirectCoordinate((float)Cos(hor - PI / 2), (float)Sin(hor - PI / 2), 0) * (moving.left ? 1 : -1);
             if (moving.up ^ moving.down)
-                location += (0, 0, (moving.down ? 1 : -1) * speed);
+                location.Z += speed * (moving.up ? 1 : -1);
         }
 
         #endregion

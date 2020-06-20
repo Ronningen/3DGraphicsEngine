@@ -78,5 +78,13 @@ namespace EyeSimuleter
                 vector.Y * multiplier,
                 vector.Z * multiplier);
         }
+
+        public static DirectCoordinate operator *(DirectCoordinate vector, float multiplier)
+        {
+            return new DirectCoordinate(
+                vector.X * multiplier,
+                vector.Y * multiplier,
+                vector.Z * multiplier);
+        }
     }
 }

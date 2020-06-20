@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using static System.Math;
 
 namespace EyeSimuleter
 {
@@ -21,6 +22,8 @@ namespace EyeSimuleter
             get { return vertexes[i % vertexes.Length]; }
             set { vertexes[i % vertexes.Length] = value; }
         }
+
+        #region constructors
 
         /// <summary></summary>
         /// <param name="colorFill"> Отображаемая текстура полигона. </param>
@@ -53,6 +56,39 @@ namespace EyeSimuleter
         }
 
         /// <summary>
+        /// Создает правильны многоуголник.
+        /// </summary>
+        /// <param name="colorFill"> Отображаемая текстура полигона. </param>
+        /// <param name="angleAmunt"> Количество углов правильного многоугоьника. </param>
+        /// <param name="centrePoint"> Координаты центра многоугольника. </param>
+        /// <param name="radius"> Задает одну из вершин многоугольника вектором от центра. </param>
+        /// <param name="normal"> Координаты вектора нормали к плоскости многоугольника. Ну или хотя бы указывает плоскость нормали. </param>
+        public ConvexPolygon(Brush colorFill, int angleAmunt, DirectCoordinate centrePoint, DirectCoordinate radius, DirectCoordinate normal)
+        {
+            if (angleAmunt < 3)
+                angleAmunt = 3;
+            this.colorFill = colorFill;
+
+            //новый плоский базис для удобного рассчета вершин:
+            DirectCoordinate right = radius.VectorMultiplicate(normal);
+            right *= radius.Length / right.Length;
+
+            //проверка на коллинеарность вектора радиуса и нормали:
+            this.normal = radius.VectorMultiplicate(right);
+            if (this.normal.Length == 0)
+                throw new Exception("Нормаль должна быть перпендикулярна плоскости.");
+
+            vertexes = new DirectCoordinate[angleAmunt];
+
+            //рассчет вершин правильного многоугольника:
+            double deltaAngle = PI * 2 / angleAmunt;
+            for (int i = 0; i < angleAmunt; i++)
+                vertexes[i] = centrePoint + (float)Cos(deltaAngle * i) * radius + (float)Sin(deltaAngle * i) * right;
+        }
+
+        #endregion
+
+        /// <summary>
         /// Возвращает точку пересечения плоскости полигона и прямой, заданной аргументами.
         /// </summary>
         /// <param name="point1"> первая точка прямой, базовая. </param>
@@ -61,7 +97,7 @@ namespace EyeSimuleter
         /// <returns> Точка пересечения прямой и многоугольника, если они пересекаются. </returns>
         public DirectCoordinate? GetIntersection(DirectCoordinate point1, DirectCoordinate point2, out float rayCoordinate)
         {
-            DirectCoordinate direction = point1 - point2; //направляющий вектор.
+            DirectCoordinate direction = point2 - point1; //направляющий вектор.
             //введение скалярного произведения нормали и напрвляющего вектора для проверки на параллельность:
             float denominator = normal.ScalarMultiplication(direction);
             if (denominator != 0)

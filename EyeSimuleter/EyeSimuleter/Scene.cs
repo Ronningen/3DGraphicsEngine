@@ -36,7 +36,14 @@ namespace EyeSimuleter
             eye = new Eye();
 
             decor = new List<ConvexPolygon>();
-            GenerateCube(100);
+            #region decoration
+
+            GenerateCube(1000);
+            decor.Add(new ConvexPolygon(Brushes.Black, 7, (800, 0, 0), (0, 0, 400), (1, 0, 0)));
+            decor.Add(new ConvexPolygon(Brushes.Black, 3, (0, 800, 0), (0, 0, 400), (0, 1, 0)));
+            decor.Add(new ConvexPolygon(Brushes.Black, 3, (0, 0, 800), (0, 400, 0), (0, 0, 1))); 
+
+            #endregion
 
             evulater += eye.Move;
         }
