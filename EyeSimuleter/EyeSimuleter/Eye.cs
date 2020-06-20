@@ -51,7 +51,7 @@ namespace EyeSimuleter
                         if (polygon.GetIntersection(location, currentPixel, out float rayCordinate) is DirectCoordinate intersection && rayCordinate > 0)
                             intersections.Add(((intersection - location).Length, polygon.colorFill));
 
-                    //Закраска пикселя в соответсвии с расположением видимых барьеров
+                    //Закраска пикселя в соответсвии с расположением видимых барьеров:
                     foreach (Brush brush in intersections.OrderByDescending(p => p.distance).Select(p => p.colorFill))
                         g.FillRectangle(brush, (int)i * pixelSize - pixelSize / 2, (int)j * pixelSize - pixelSize / 2, pixelSize, pixelSize);
                 }
